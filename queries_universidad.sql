@@ -11,7 +11,10 @@ SELECT departamento.nombre, persona.nombre, apellido1, apellido2 FROM persona JO
 SELECT persona.nombre, apellido1, apellido2 FROM persona JOIN profesor ON persona.id = profesor.id_profesor LEFT JOIN departamento ON  profesor.id_departamento = departamento.id WHERE departamento.id IS NULL;
 SELECT departamento.nombre FROM departamento LEFT JOIN profesor ON departamento.id = profesor.id_departamento WHERE profesor.id_departamento IS NULL;
 SELECT persona.nombre, apellido1, apellido2 FROM persona JOIN profesor ON persona.id = profesor.id_profesor LEFT JOIN asignatura ON profesor.id_profesor = asignatura.id_profesor WHERE asignatura.id_profesor IS NULL;
--- SELECT asignatura.nombre FROM asignatura JOIN profesor ON persona.id = profesor.id_profesor LEFT JOIN profesor ON profesor.id_profesor = asignatura.id_profesor WHERE asignatura.id_profesor IS NULL; 
+SELECT asignatura.nombre FROM asignatura JOIN profesor ON persona.id = profesor.id_profesor LEFT JOIN profesor ON profesor.id_profesor = asignatura.id_profesor WHERE asignatura.id_profesor IS NULL; 
 SELECT COUNT(persona.id) from persona where tipo = 'alumno';
 SELECT COUNT(persona.id) from persona where tipo = 'alumno' and fecha_nacimiento like '%1999%';
-SELECT departamento.nombre AS nombre_departamento, count(profesor.id_profesor) AS num_profesores FROM departamento JOIN profesor ON departamento.id = profesor.id_departamento GROUP BY departamento.nombre ORDER BY num_profesores DESC;
+SELECT departamento.nombre, count(profesor.id_profesor) AS num_profesores FROM departamento JOIN profesor ON departamento.id = profesor.id_departamento GROUP BY departamento.nombre ORDER BY num_profesores DESC;
+SELECT departamento.nombre, COUNT(profesor.id_profesor) AS num_profes FROM departamento LEFT JOIN profesor ON departamento.id = profesor.id_departamento LEFT JOIN persona  ON profesor.id_profesor = persona.id GROUP BY departamento.nombre;
+SELECT grado.nombre, COUNT(asignatura.id) AS num_asignaturas FROM grado LEFT JOIN asignatura ON grado.id = asignatura.id_grado GROUP BY grado.nombre ORDER BY num_asignaturas DESC;
+SELECT grado.nombre, COUNT(asignatura.id) AS num_asignaturas FROM grado LEFT JOIN asignatura ON grado.id = asignatura.id_grado GROUP BY grado.nombre HAVING num_asignaturas > 40 ORDER BY num_asignaturas DESC;
