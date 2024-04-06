@@ -7,9 +7,14 @@ SELECT persona.apellido1, persona.apellido2, persona.nombre, departamento.nombre
 SELECT asignatura.nombre, curso_escolar.anyo_inicio, curso_escolar.anyo_fin FROM persona JOIN alumno_se_matricula_asignatura ON persona.id = alumno_se_matricula_asignatura.id_alumno JOIN asignatura ON alumno_se_matricula_asignatura.id_asignatura = asignatura.id JOIN curso_escolar ON alumno_se_matricula_asignatura.id_curso_escolar = curso_escolar.id WHERE persona.nif = '26902806M';
 SELECT departamento.nombre FROM departamento JOIN profesor ON departamento.id = profesor.id_departamento JOIN asignatura ON profesor.id_profesor = asignatura.id_profesor JOIN grado ON asignatura.id_grado = grado.id WHERE grado.nombre = 'Grado en Ingeniería Informática (Plan 2015)';
 SELECT * FROM persona JOIN alumno_se_matricula_asignatura ON persona.id = alumno_se_matricula_asignatura.id_alumno JOIN curso_escolar ON alumno_se_matricula_asignatura.id_curso_escolar = curso_escolar.id WHERE curso_escolar.anyo_inicio = 2018 AND curso_escolar.anyo_fin = 2019 AND persona.tipo = 'alumno';
+SELECT departamento.nombre, persona.nombre, apellido1, apellido2 FROM persona JOIN profesor ON persona.id = profesor.id_profesor RIGHT JOIN departamento ON profesor.id_departamento = departamento.id ORDER BY departamento.nombre ASC, persona.nombre ASC, apellido1 ASC, apellido2 ASC;
+SELECT persona.nombre, apellido1, apellido2 FROM persona JOIN profesor ON persona.id = profesor.id_profesor LEFT JOIN departamento ON  profesor.id_departamento = departamento.id WHERE departamento.id IS NULL;
+SELECT departamento.nombre FROM departamento LEFT JOIN profesor ON departamento.id = profesor.id_departamento WHERE profesor.id_departamento IS NULL;
+SELECT persona.nombre, apellido1, apellido2 FROM persona JOIN profesor ON persona.id = profesor.id_profesor LEFT JOIN asignatura ON profesor.id_profesor = asignatura.id_profesor WHERE asignatura.id_profesor IS NULL;
+SELECT asignatura.nombre FROM asignatura LEFT JOIN profesor ON profesor.id_profesor = asignatura.id_profesor WHERE asignatura.id_profesor IS NULL; 
 SELECT COUNT(persona.id) from persona where tipo = 'alumno';
 SELECT COUNT(persona.id) from persona where tipo = 'alumno' and fecha_nacimiento like '%1999%';
-/* Calcula quants/es professors/es hi ha en cada departament. El resultat només ha de mostrar dues columnes, una amb el nom del departament 
-i una altra amb el nombre de professors/es que hi ha en aquest departament. El resultat 
-només ha d'incloure els departaments que tenen professors/es associats i haurà d'estar ordenat de major a menor pel nombre de professors/es.*/
-SELECT departamento.nombre, count()
+SELECT departamento.nombre AS nombre_departamento, count(profesor.id_profesor) AS num_profesores FROM departamento JOIN profesor ON departamento.id = profesor.id_departamento GROUP BY departamento.nombre ORDER BY num_profesores DESC;
+SELECT departamento.nombre, COUNT(pofesor.id_profesor) AS num_profes FROM departamento JOIN persona ON profesor.id_profesor = persona.id LEFT JOIN profesor ON departamento.id = profesor.id_departamento GROUP BY departamento.nombre, num_profes;
+SELECT grado.nombre, count(asignatura.id) AS num_asignaturas FROM grado LEFT JOIN asignatura ON grado.id = asignatura.id_grado GROUP BY grado.nombre ORDER BY num_asignaturas DESC;
+SELECT grado.nombre, count(asignatura.id) AS num_asignaturas FROM grado LEFT JOIN asignatura ON grado.id = asignatura.id_grado GROUP BY grado.nombre HAVING num_asignaturas > 40 ORDER BY num_asignaturas DESC;
